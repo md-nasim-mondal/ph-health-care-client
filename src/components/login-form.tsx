@@ -10,9 +10,9 @@ const LoginForm = () => {
   const [state, formAction, isPending] = useActionState(loginUser, null);
 
   const getFieldError = (fieldName: string) => {
-    if (state && state.errors) {
-      const error = state.errors.find((err: any) => err.field === fieldName);
-      return error.message;
+    if (state && state?.errors) {
+      const error = state?.errors?.find((err: any) => err.field === fieldName);
+      return error?.message;
     } else {
       return null;
     }
@@ -21,20 +21,20 @@ const LoginForm = () => {
   return (
     <form action={formAction}>
       <FieldGroup>
-        <div className="grid grid-cols-1 gap-4">
+        <div className='grid grid-cols-1 gap-4'>
           {/* Email */}
           <Field>
-            <FieldLabel htmlFor="email">Email</FieldLabel>
+            <FieldLabel htmlFor='email'>Email</FieldLabel>
             <Input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="m@example.com"
+              id='email'
+              name='email'
+              type='email'
+              placeholder='m@example.com'
               //   required
             />
 
             {getFieldError("email") && (
-              <FieldDescription className="text-red-600">
+              <FieldDescription className='text-red-600'>
                 {getFieldError("email")}
               </FieldDescription>
             )}
@@ -42,38 +42,37 @@ const LoginForm = () => {
 
           {/* Password */}
           <Field>
-            <FieldLabel htmlFor="password">Password</FieldLabel>
+            <FieldLabel htmlFor='password'>Password</FieldLabel>
             <Input
-              id="password"
-              name="password"
-              type="password"
-              placeholder="Enter your password"
+              id='password'
+              name='password'
+              type='password'
+              placeholder='Enter your password'
               //   required
             />
             {getFieldError("password") && (
-              <FieldDescription className="text-red-600">
+              <FieldDescription className='text-red-600'>
                 {getFieldError("password")}
               </FieldDescription>
             )}
           </Field>
         </div>
-        <FieldGroup className="mt-4">
+        <FieldGroup className='mt-4'>
           <Field>
-            <Button type="submit" disabled={isPending}>
+            <Button type='submit' disabled={isPending}>
               {isPending ? "Logging in..." : "Login"}
             </Button>
 
-            <FieldDescription className="px-6 text-center">
+            <FieldDescription className='px-6 text-center'>
               Don&apos;t have an account?{" "}
-              <a href="/register" className="text-blue-600 hover:underline">
+              <a href='/register' className='text-blue-600 hover:underline'>
                 Sign up
               </a>
             </FieldDescription>
-            <FieldDescription className="px-6 text-center">
+            <FieldDescription className='px-6 text-center'>
               <a
-                href="/forget-password"
-                className="text-blue-600 hover:underline"
-              >
+                href='/forget-password'
+                className='text-blue-600 hover:underline'>
                 Forgot password?
               </a>
             </FieldDescription>
