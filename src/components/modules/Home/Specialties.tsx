@@ -29,7 +29,7 @@ const specialists = [
   },
 ];
 
-const Specialities = () => {
+const Specialties = () => {
   return (
     <section className='py-24 mt-24 md:mt-20'>
       <div className='container mx-auto px-4 sm:px-6 lg:px-8'>
@@ -76,4 +76,4 @@ const Specialities = () => {
   );
 };
 
-export default Specialities;
+export default Specialties;
