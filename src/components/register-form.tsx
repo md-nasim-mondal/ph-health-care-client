@@ -9,13 +9,12 @@ import { Input } from "./ui/input";
 
 const RegisterForm = () => {
   const [state, formAction, isPending] = useActionState(registerPatient, null);
-  console.log(state, "state");
 
   const getFieldError = (fieldName: string) => {
-    if (state && state.errors) {
-      const error = state.errors.find((err: any) => err.field === fieldName);
+    if (state && state?.errors) {
+      const error = state?.errors.find((err: any) => err.field === fieldName);
       if (error) {
-        return error.message;
+        return error?.message;
       } else {
         return null;
       }
