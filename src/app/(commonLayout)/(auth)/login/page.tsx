@@ -17,3 +17,5 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
+
+// This is login page
