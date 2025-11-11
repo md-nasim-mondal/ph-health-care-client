@@ -95,6 +95,3 @@ export const loginUser = async (_currentState: any, formData: FormData) => {
     return { error: "Login Failed" };
   }
 };
-
-
-// Formate the code
