@@ -54,9 +54,9 @@ export const loginUser = async (_currentState: any, formData: FormData) => {
 
     if (setCookieHeaders && setCookieHeaders.length > 0) {
       setCookieHeaders.forEach((cookie: string) => {
-        console.log(cookie, "for each cookie");
+        // console.log(cookie, "for each cookie");
         const parsedCookie = parse(cookie);
-        console.log(parsedCookie, "parsed cookie");
+        // console.log(parsedCookie, "parsed cookie");
 
         if (parsedCookie["accessToken"]) {
           accessTokenObject = parsedCookie;
@@ -78,15 +78,17 @@ export const loginUser = async (_currentState: any, formData: FormData) => {
     cookieStore.set("accessToken", accessTokenObject.accessToken, {
       secure: true,
       httpOnly: true,
-      maxAge: parseInt(accessTokenObject.maxAge),
+      maxAge: parseInt(accessTokenObject["Max-Age"]) || 1000 * 60 * 60 * 24,
+      sameSite: accessTokenObject["SameSite"] || "None",
       path: accessTokenObject.Path || "/",
     });
 
     cookieStore.set("refreshToken", refreshTokenObject.refreshToken, {
       secure: true,
       httpOnly: true,
-      maxAge: parseInt(accessTokenObject.maxAge),
-      path: accessTokenObject.Path || "/",
+      maxAge: parseInt(refreshTokenObject["Max-Age"]) || 1000 * 60 * 60 * 24 * 7,
+      sameSite: refreshTokenObject["SameSite"] || "None",
+      path: refreshTokenObject.Path || "/",
     });
 
     return result;
