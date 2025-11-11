@@ -65,31 +65,29 @@ export const loginUser = async (_currentState: any, formData: FormData) => {
           refreshTokenObject = parsedCookie;
         }
       });
-
     } else {
       throw new Error("No Set-Cookie header found!");
     }
 
-      if(!accessTokenObject || !refreshTokenObject){
-        throw new Error("Tokens not found in cookies");
-      }
+    if (!accessTokenObject || !refreshTokenObject) {
+      throw new Error("Tokens not found in cookies");
+    }
 
-      const cookieStore = await cookies();
+    const cookieStore = await cookies();
 
-      cookieStore.set("accessToken", accessTokenObject.accessToken, {
-        secure: true,
-        httpOnly: true,
-        maxAge: parseInt(accessTokenObject.maxAge),
-        path: accessTokenObject.Path || "/"
-      });
+    cookieStore.set("accessToken", accessTokenObject.accessToken, {
+      secure: true,
+      httpOnly: true,
+      maxAge: parseInt(accessTokenObject.maxAge),
+      path: accessTokenObject.Path || "/",
+    });
 
-      cookieStore.set("refreshToken", refreshTokenObject.refreshToken, {
-        secure: true,
-        httpOnly: true,
-        maxAge: parseInt(accessTokenObject.maxAge),
-        path: accessTokenObject.Path || "/"
-      })
-
+    cookieStore.set("refreshToken", refreshTokenObject.refreshToken, {
+      secure: true,
+      httpOnly: true,
+      maxAge: parseInt(accessTokenObject.maxAge),
+      path: accessTokenObject.Path || "/",
+    });
 
     return result;
   } catch (err) {
@@ -97,3 +95,6 @@ export const loginUser = async (_currentState: any, formData: FormData) => {
     return { error: "Login Failed" };
   }
 };
+
+
+// Formate the code
