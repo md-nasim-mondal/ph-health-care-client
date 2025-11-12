@@ -86,7 +86,8 @@ export const loginUser = async (_currentState: any, formData: FormData) => {
     cookieStore.set("refreshToken", refreshTokenObject.refreshToken, {
       secure: true,
       httpOnly: true,
-      maxAge: parseInt(refreshTokenObject["Max-Age"]) || 1000 * 60 * 60 * 24 * 7,
+      maxAge:
+        parseInt(refreshTokenObject["Max-Age"]) || 1000 * 60 * 60 * 24 * 7,
       sameSite: refreshTokenObject["SameSite"] || "None",
       path: refreshTokenObject.Path || "/",
     });
