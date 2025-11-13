@@ -11,6 +11,7 @@ import {
   isValidRedirectForRole,
   type UserRole,
 } from "@/lib/auth-utils";
+import { setCookie } from "./tokenHandlers";
 
 const loginValidationSchema = z.object({
   email: z.email({
@@ -82,9 +83,7 @@ export const loginUser = async (_currentState: any, formData: FormData) => {
       throw new Error("Tokens not found in cookies");
     }
 
-    const cookieStore = await cookies();
-
-    cookieStore.set("accessToken", accessTokenObject.accessToken, {
+    await setCookie("accessToken", accessTokenObject.accessToken, {
       secure: true,
       httpOnly: true,
       maxAge: parseInt(accessTokenObject["Max-Age"]) || 1000 * 60 * 60 * 24,
@@ -92,7 +91,7 @@ export const loginUser = async (_currentState: any, formData: FormData) => {
       path: accessTokenObject.Path || "/",
     });
 
-    cookieStore.set("refreshToken", refreshTokenObject.refreshToken, {
+    await setCookie("refreshToken", refreshTokenObject.refreshToken, {
       secure: true,
       httpOnly: true,
       maxAge:
