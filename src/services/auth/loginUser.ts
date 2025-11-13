@@ -2,7 +2,6 @@
 "use server";
 import z from "zod";
 import { parse } from "cookie";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import type { JwtPayload } from "jsonwebtoken";
 import jwt from "jsonwebtoken";
@@ -58,7 +57,7 @@ export const loginUser = async (_currentState: any, formData: FormData) => {
       },
     });
 
-    const result = await res.json()
+    const result = await res.json();
 
     const setCookieHeaders = res.headers.getSetCookie();
 
@@ -111,8 +110,8 @@ export const loginUser = async (_currentState: any, formData: FormData) => {
 
     const userRole: UserRole = verifiedToken.role;
 
-    if(!result.success){
-      throw new Error("Login Failed!")
+    if (!result.success) {
+      throw new Error("Login Failed!");
     }
 
     if (redirectTo) {
