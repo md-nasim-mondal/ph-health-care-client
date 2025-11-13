@@ -1,4 +1,4 @@
-"client component";
+"use client";
 
 import { logoutUser } from "@/services/auth/logoutUser";
 import { Button } from "../ui/button";
@@ -8,7 +8,11 @@ const LogoutButton = () => {
     await logoutUser();
   };
 
-  return <Button onClick={handleLogout}>Logout</Button>;
+  return (
+    <Button variant={"destructive"} onClick={handleLogout}>
+      Logout
+    </Button>
+  );
 };
 
 export default LogoutButton;
