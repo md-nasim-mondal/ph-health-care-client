@@ -111,7 +111,7 @@ export const loginUser = async (_currentState: any, formData: FormData) => {
     const userRole: UserRole = verifiedToken.role;
 
     if (!result.success) {
-      throw new Error("Login Failed!");
+      throw new Error(result.message || "Login Failed!");
     }
 
     if (redirectTo) {
@@ -130,6 +130,13 @@ export const loginUser = async (_currentState: any, formData: FormData) => {
       throw err;
     }
     console.log(err);
-    return { error: "Login Failed" };
+    return {
+      success: false,
+      message: `${
+        process.env.NODE_ENV === "development"
+          ? err.message
+          : "Login Failed!. You might have given incorrect credentials!"
+      }`,
+    };
   }
 };
