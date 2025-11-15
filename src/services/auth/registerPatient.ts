@@ -89,6 +89,13 @@ export const registerPatient = async (
       throw err;
     }
     console.log(err);
-    return { error: "Registration Failed!" };
+    return {
+      success: false,
+      message: `${
+        process.env.NODE_ENV === "development"
+          ? err.message
+          : "Registration Failed. Please try again!"
+      }`,
+    };
   }
 };

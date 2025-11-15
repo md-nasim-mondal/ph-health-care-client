@@ -111,18 +111,18 @@ export const loginUser = async (_currentState: any, formData: FormData) => {
     const userRole: UserRole = verifiedToken.role;
 
     if (!result.success) {
-      throw new Error("Login Failed!");
+      throw new Error(result.message || "Login Failed!");
     }
 
     if (redirectTo) {
       const requestedPath = redirectTo.toString();
       if (isValidRedirectForRole(requestedPath, userRole)) {
-        redirect(requestedPath);
+        redirect(`${requestedPath}/?loggedIn=true`);
       } else {
-        redirect(getDefaultDashboardRoute(userRole));
+        redirect(`${getDefaultDashboardRoute(userRole)}/?loggedIn=true`);
       }
     } else {
-      redirect(getDefaultDashboardRoute(userRole));
+      redirect(`${getDefaultDashboardRoute(userRole)}/?loggedIn=true`);
     }
   } catch (err: any) {
     // Re-throw NEXT_REDIRECT errors so Next.js can handle them
@@ -130,6 +130,13 @@ export const loginUser = async (_currentState: any, formData: FormData) => {
       throw err;
     }
     console.log(err);
-    return { error: "Login Failed" };
+    return {
+      success: false,
+      message: `${
+        process.env.NODE_ENV === "development"
+          ? err.message
+          : "Login Failed!. You might have given incorrect credentials!"
+      }`,
+    };
   }
 };
