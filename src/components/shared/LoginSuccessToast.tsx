@@ -4,16 +4,16 @@ import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { toast } from "sonner";
 
-const LogoutSuccessToast = () => {
+const LoginSuccessToast = () => {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    if (searchParams.get("loggedOut") === "true") {
-      toast.success("You have been logged out successfully!");
+    if (searchParams.get("loggedIn") === "true") {
+      toast.success("You have been logged in successfully!");
     }
   }, [searchParams]);
 
   return null;
 };
 
-export default LogoutSuccessToast;
+export default LoginSuccessToast;
