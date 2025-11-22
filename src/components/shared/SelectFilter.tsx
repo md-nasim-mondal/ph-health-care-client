@@ -44,13 +44,12 @@ const SelectFilter = ({
     <Select
       value={currentValue}
       onValueChange={handleChange}
-      disabled={isPending}
-    >
+      disabled={isPending}>
       <SelectTrigger>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="All">All</SelectItem>
+        <SelectItem value='All'>All</SelectItem>
         {options.map((option) => (
           <SelectItem key={option.value} value={option.value}>
             {option.label}
