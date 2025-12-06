@@ -11,8 +11,8 @@ const LoginForm = ({redirect}: {redirect?: string}) => {
   const [state, formAction, isPending] = useActionState(loginUser, null);
 
   const getFieldError = (fieldName: string) => {
-    if (state && state?.errors) {
-      const error = state?.errors?.find((err: any) => err.field === fieldName);
+    if (state && "errors" in state && state.errors) {
+      const error = state.errors.find((err: any) => err.field === fieldName);
       return error?.message;
     } else {
       return null;
@@ -20,7 +20,7 @@ const LoginForm = ({redirect}: {redirect?: string}) => {
   };
 
   useEffect(()=>{
-    if(state && !state.success && state.message){
+    if(state && !state.success && "message" in state && state.message){
       toast.error(state.message)
     }
   },[state])
