@@ -19,9 +19,10 @@ import { useSpecialtySelection } from "@/hooks/specialtyHooks/useSpecialtySelect
 import { createDoctor, updateDoctor } from "@/services/admin/doctorManagement";
 import { IDoctor } from "@/types/doctor.interface";
 import { ISpecialty } from "@/types/specialties.interface";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import SpecialtyMultiSelect from "./SpecialtyMultiSelect";
+import Image from "next/image";
 
 interface IDoctorFormDialogProps {
   open: boolean;
@@ -38,16 +39,38 @@ const DoctorFormDialog = ({
   doctor,
   specialties,
 }: IDoctorFormDialogProps) => {
+  const formRef = useRef<HTMLFormElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const isEdit = !!doctor;
 
   const [gender, setGender] = useState<"MALE" | "FEMALE">(
     doctor?.gender || "MALE",
   );
 
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    setSelectedFile(file || null);
+  };
+
   const [state, formAction, pending] = useActionState(
     isEdit ? updateDoctor.bind(null, doctor.id!) : createDoctor,
     null,
   );
+
+  const handleClose = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+
+    if (selectedFile) {
+      setSelectedFile(null); // clear preview
+    }
+
+    formRef.current?.reset(); // clear form
+    onClose(); // close dialog
+  };
 
   const specialtySelection = useSpecialtySelection({
     doctor,
@@ -62,21 +85,33 @@ const DoctorFormDialog = ({
   useEffect(() => {
     if (state?.success) {
       toast.success(state.message);
+      if (formRef.current) {
+        formRef.current.reset();
+      }
       onSuccess();
       onClose();
     } else if (state && !state.success) {
       toast.error(state.message);
+
+      if (selectedFile && fileInputRef.current) {
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(selectedFile);
+        fileInputRef.current.files = dataTransfer.files;
+      }
     }
-  }, [state, onSuccess, onClose]);
+  }, [state, onSuccess, onClose, selectedFile]);
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
+    <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className='max-h-[90vh] flex flex-col p-0'>
         <DialogHeader className='px-6 pt-6 pb-4'>
           <DialogTitle>{isEdit ? "Edit Doctor" : "Add New Doctor"}</DialogTitle>
         </DialogHeader>
 
-        <form action={formAction} className='flex flex-col flex-1 min-h-0'>
+        <form
+          ref={formRef}
+          action={formAction}
+          className='flex flex-col flex-1 min-h-0'>
           <div className='flex-1 overflow-y-auto px-6 space-y-4 pb-4'>
             <Field>
               <FieldLabel htmlFor='name'>Name</FieldLabel>
@@ -135,47 +170,6 @@ const DoctorFormDialog = ({
                 </Field>
               </>
             )}
-
-            {/* <Field>
-              <FieldLabel htmlFor='specialties'>Specialty</FieldLabel>
-              <Input
-                id='specialties'
-                name='specialties'
-                placeholder='Select a Specialty'
-                // defaultValue={isEdit ? doctor?.doctorSpecialties?.[0]?.specialties?.title : ""}
-                defaultValue={selectedSpecialty}
-                type='hidden'
-              />
-              <Select
-                value={
-                  //   isEdit
-                  //     ? doctor?.doctorSpecialties?.[0]?.specialties?.title || ""
-                  //     : selectedSpecialty
-                  selectedSpecialty
-                }
-                onValueChange={setSelectedSpecialty}>
-                <SelectTrigger>
-                  <SelectValue placeholder='Select a Specialty' />
-                </SelectTrigger>
-                <SelectContent>
-                  {specialties && specialties.length > 0 ? (
-                    specialties.map((Specialty) => (
-                      <SelectItem key={Specialty.id} value={Specialty.title}>
-                        {Specialty.title}
-                      </SelectItem>
-                    ))
-                  ) : (
-                    <SelectItem value='none' disabled>
-                      No specialties available
-                    </SelectItem>
-                  )}
-                </SelectContent>
-              </Select>
-              <p className='text-xs text-gray-500 mt-1'>
-                Select a Specialty for the doctor
-              </p>
-              <InputFieldError state={state} field='specialties' />
-            </Field> */}
 
             {/* Specialty Selection */}
             <SpecialtyMultiSelect
@@ -352,7 +346,27 @@ const DoctorFormDialog = ({
             {!isEdit && (
               <Field>
                 <FieldLabel htmlFor='file'>Profile Photo</FieldLabel>
-                <Input id='file' name='file' type='file' accept='image/*' />
+                {selectedFile && (
+                  <Image
+                    src={
+                      typeof selectedFile === "string"
+                        ? selectedFile
+                        : URL.createObjectURL(selectedFile)
+                    }
+                    alt='Profile Photo Preview'
+                    width={50}
+                    height={50}
+                    className='mb-2 rounded-full'
+                  />
+                )}
+                <Input
+                  ref={fileInputRef}
+                  id='file'
+                  name='file'
+                  type='file'
+                  accept='image/*'
+                  onChange={handleFileChange}
+                />
                 <p className='text-xs text-gray-500 mt-1'>
                   Upload a profile photo for the doctor
                 </p>
