@@ -21,30 +21,31 @@ const AdminDoctorsManagementPage = async ({
   const specialtiesResult = await getSpecialties();
   const doctorsResult = await getDoctors(queryString);
   const totalPages = Math.ceil(
-    doctorsResult.meta.total / doctorsResult.meta.limit
+    doctorsResult?.meta?.total / doctorsResult?.meta?.limit,
   );
+
   return (
-    <div className="space-y-6">
-      <DoctorsManagementHeader specialties={specialtiesResult.data} />
-      <div className="flex space-x-2">
-        <SearchFilter paramName="searchTerm" placeholder="Search doctors..." />
+    <div className='space-y-6'>
+      <DoctorsManagementHeader specialties={specialtiesResult?.data || []} />
+      <div className='flex space-x-2'>
+        <SearchFilter paramName='searchTerm' placeholder='Search doctors...' />
         <SelectFilter
-          paramName="specialty" // ?specialty="Cardiology"
-          options={specialtiesResult.data.map((specialty: ISpecialty) => ({
-            label: specialty.title,
-            value: specialty.title,
+          paramName='specialty' // ?specialty="Cardiology"
+          options={specialtiesResult?.data?.map((specialty: ISpecialty) => ({
+            label: specialty?.title,
+            value: specialty?.title,
           }))}
-          placeholder="Filter by specialty"
+          placeholder='Filter by specialty'
         />
         <RefreshButton />
       </div>
       <Suspense fallback={<TableSkeleton columns={10} rows={10} />}>
         <DoctorsTable
-          doctors={doctorsResult.data}
-          specialties={specialtiesResult.data}
+          doctors={doctorsResult?.data}
+          specialties={specialtiesResult?.data}
         />
         <TablePagination
-          currentPage={doctorsResult.meta.page}
+          currentPage={doctorsResult?.meta?.page}
           totalPages={totalPages}
         />
       </Suspense>
